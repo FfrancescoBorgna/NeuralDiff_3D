@@ -1,0 +1,42 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args":
+            ["--path=/scratch/fborgna/NeuralDiff/ckpts/rel/P01_01/epoch=14.ckpt" ,
+            "--vid=P01_01", "--exp=debug",
+            "--ply_path=/scratch/fborgna/EPIC_F_rec/P01_01/dense/fused.ply",
+            "--root_data=data/Epic_converted",
+            "--is_eval_script"],
+            
+            //Single Views
+            //["--path=/scratch/fborgna/NeuralDiff/ckpts/rel/P01_01/epoch=9.ckpt" ,
+            //"--vid=P01_01", "--exp=debug" ,
+            //"--is_eval_script", "--outputs=SingleViews",
+            //"--masks_n_samples=0",
+            //"--summary_n_samples=0", 
+            //"--root_data=data/Epic_converted"],
+            //"args": ["--path=/scratch/fborgna/NeuralDiff/ckpts/rel/P01_01/epoch=9.ckpt" ,
+            //"--vid=P01_04", "--exp=prova" ,
+            //"--is_eval_script", "--outputs=summary",
+            //"--masks_n_samples=0",
+            //"--summary_n_samples=0", 
+            //"--root_data=data/Epic_converted"],
+
+            //"args": ["--root=data/Epic_converted", 
+            //            "--vid=P01_01", 
+            //            "--exp_name=rel/P01_01 ", 
+            //            "--train_ratio=1","--num_epochs=2",
+            //            "--num_workers=0"],
+        }
+    ]
+}
