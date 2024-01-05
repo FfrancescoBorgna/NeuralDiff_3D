@@ -1,16 +1,22 @@
-import json
+import open3d as o3d
+
+
 import os
-import random
-
-import matplotlib.pyplot as plt
 import numpy as np
-import torch
-import torchvision.transforms
-from PIL import Image
 from torch.utils.data import Dataset
+import torchvision
+import torch
+import matplotlib.pyplot as plt
+import json
 
-from .utils import *
+import cv2
+from tqdm import tqdm
 
+
+from datetime import datetime
+import copy
+import argparse
+from scipy.spatial.distance import cdist
 
 def load_meta(root, name="meta.json"):
     """Load meta information per scene and frame (nears, fars, poses etc.)."""
@@ -24,16 +30,13 @@ def load_meta(root, name="meta.json"):
     ds["intrinsics"] = np.array(ds["intrinsics"])
     return ds
 
-
 class EPICDiff(Dataset):
     def __init__(self, vid, root="data/EPIC-Diff", split=None):
 
         self.root = os.path.join(root, vid)
         self.vid = vid
-
-        #Get image dimensions
-        self.img_w = 2*228
-        self.img_h = 2*128
+        self.img_w = 228
+        self.img_h = 128
         self.split = split
         self.val_num = 1
         self.transform = torchvision.transforms.Compose([
@@ -176,3 +179,71 @@ class EPICDiff(Dataset):
             sample = self.rays_per_image(idx, pose)
 
         return sample
+import numpy as np
+
+def points_visible_to_camera(point_cloud, intrinsic_matrix, extrinsic_matrix,width=228,height=128):
+    """
+    Filter points in a point cloud that are visible to a camera.
+
+    Parameters:
+    - point_cloud (numpy array): Array of shape (N, 3) representing the 3D points in world coordinates.
+    - intrinsic_matrix (numpy array): 3x3 intrinsic matrix representing the camera intrinsics.
+    - extrinsic_matrix (numpy array): 4x4 extrinsic matrix representing the camera pose.
+
+    Returns:
+    - numpy array: Array of shape (M, 3) representing the visible points.
+    """
+    # Full projection matrix
+    projection_matrix = np.dot(intrinsic_matrix, extrinsic_matrix)
+
+    # Homogeneous coordinates for 3D points
+    point_cloud_homogeneous = np.hstack((point_cloud, np.ones((point_cloud.shape[0], 1))))
+
+    # Project points to 2D image coordinates
+    image_points_homogeneous = np.dot(projection_matrix, point_cloud_homogeneous.T).T
+    image_points = image_points_homogeneous[:, :2] / image_points_homogeneous[:, 2][:, None]
+
+    # Filter points within image bounds
+    visible_points = point_cloud[(0 <= image_points[:, 0] < width) & (0 <= image_points[:, 1] < height)]
+
+    return visible_points
+
+def points_visible_to_camera_2(point_cloud, intrinsic_matrix, extrinsic_matrix,th=0.8,width=228,height=128):
+    #translate
+    pcd_camera = np.asarray(point_cloud.points) - extrinsic_matrix[:3,3]
+    #dot product
+    pcd_norms = np.linalg.norm(pcd_camera, axis=1, keepdims=True)
+    pcd_normalized = pcd_camera / pcd_norms
+
+    view_direction = -extrinsic_matrix[:,2]
+    alphas = np.dot(pcd_normalized,view_direction/(np.linalg.norm(view_direction,keepdims=True)))
+
+    indices = np.where(alphas > th)[0]
+    return indices
+
+def visibility(pcd,camera_poses,vid):
+    visible = {}
+    for k in tqdm(range(0, 1000, 5)):
+        extrinsic_camera = camera_poses[k]
+        camera_intrinsic = ed.K
+        indxs = points_visible_to_camera_2(pcd,camera_intrinsic,extrinsic_camera)
+        visible[k] = indxs.tolist()
+    
+    file_path = "visible_"+vid+".json"
+    with open(file_path, 'w') as json_file:
+        json.dump(visible, json_file)
+    return visible
+
+path_pcd = "/scratch/fborgna/EPIC_F_rec/P01_01/dense/fused.ply"
+pcd  = o3d.io.read_point_cloud(path_pcd)
+
+vid = "P01_01"
+ed = EPICDiff(vid, root="data/Epic_converted")
+
+camera_poses = ed.poses_dict
+camera_intrinsic = ed.K
+
+extrinsic_camera = camera_poses[285]
+indxs = points_visible_to_camera_2(pcd,camera_intrinsic,extrinsic_camera)
+
+visibility(pcd,camera_poses,vid)

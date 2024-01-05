@@ -4,7 +4,6 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-
         {
             "name": "Python: Current File",
             "type": "python",
@@ -12,42 +11,24 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "justMyCode": true,
-            "args":["--path=/scratch/fborgna/NeuralDiff/ckpts/rel/P01_01/Past_exp/epoch=13.ckpt" ,
-            "--vid=P01_01", "--exp=debug",
-            "--ply_path=/scratch/fborgna/EPIC_F_rec/P01_01/dense/fused.ply",
-            "--root_data=data/Epic_converted",
-            "--is_eval_script"],
-           
+            "args":["--path=/scratch/fborgna/NeuralDiff/ckpts/rel/lego228_fixed/epoch=19.ckpt" ,
+            "--vid=lego228_fixed", "--exp=debug" ,
+            "--is_eval_script", "--outputs=SingleViews",
+            "--masks_n_samples=0",
+            "--summary_n_samples=0", 
+            "--root_data=data/Epic_converted"],
             
-            
-            
-            // TRAIN
-            //["--root=data/Epic_converted", 
-            //          "--vid=lego228_fixed",
-            //          "--exp_name=rel/lego228_fixed ", 
-            //          "--train_ratio=1","--num_epochs=20",
-            //          "--num_workers=0"],
-            //
             //["--colmap_dir=/scratch/fborgna/EPIC_F_rec/lego/",
             //        "--dir_dst=/scratch/fborgna/NeuralDiff/data/Epic_converted"]
             //
-            
-            // NERF PCD // RENDER_RAYS_FROM_FRAME
-            //["--path=/scratch/fborgna/NeuralDiff/ckpts/rel/P01_01/Past_exp/epoch=13.ckpt" ,
+            //["--path=/scratch/fborgna/NeuralDiff/ckpts/rel/P01_01/epoch=14.ckpt" ,
             //"--vid=P01_01", "--exp=debug",
             //"--ply_path=/scratch/fborgna/EPIC_F_rec/P01_01/dense/fused.ply",
             //"--root_data=data/Epic_converted",
             //"--is_eval_script"],
             
             //Single Views
-            //["--path=/scratch/fborgna/NeuralDiff/ckpts/rel/lego228_fixed/epoch=19.ckpt" ,
-            //"--vid=lego228_fixed", "--exp=debug" ,
-            //"--is_eval_script", "--outputs=SingleViews",
-            //"--masks_n_samples=0",
-            //"--summary_n_samples=0", 
-            //"--root_data=data/Epic_converted"],
-
-            //
+            
             //"args": ["--path=/scratch/fborgna/NeuralDiff/ckpts/rel/P01_01/epoch=9.ckpt" ,
             //"--vid=P01_04", "--exp=prova" ,
             //"--is_eval_script", "--outputs=summary",

@@ -6,10 +6,11 @@ data/
 *.pt
 *.png
 *.jpg
+*.ply
 
 __pycache__/
 *.py[cod]
 *$py.class
 pcd_P01_01.npy
-pcd_P01_01.ply
 scripts/train_log
+model/rendering.py

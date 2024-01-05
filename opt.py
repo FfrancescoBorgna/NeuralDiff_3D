@@ -64,7 +64,7 @@ def get_opts(vid=None, root="data/EPIC-Diff"):
     parser.add_argument(
         "--chunk",
         type=int,
-        default=32 * 1024,
+        default=16 * 1024,
         help="Chunk size to split the input to avoid reduce memory footprint.",
     )
     parser.add_argument(

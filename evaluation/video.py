@@ -132,7 +132,8 @@ def render_single_view(dataset, model,root,sample_id=None, n_images=20):
         n_images = len(dataset.img_ids)
 
     #i = dataset.img_ids[:: math.ceil(len(dataset.img_ids) / n_images)]
-    i = dataset.img_ids[:: math.ceil(len(dataset.img_ids) / n_images)]
+    i_all = dataset.img_ids[:: math.ceil(len(dataset.img_ids) / n_images)]
+    i = i_all[0]
     if sample_id is not None:
         j = sample_id
     else:

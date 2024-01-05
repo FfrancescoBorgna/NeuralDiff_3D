@@ -115,7 +115,7 @@ def init_model(ckpt_path, dataset):
     model = train.NeuralDiffSystem(
         opt_hp, train_dataset=dataset, val_dataset=dataset
     ).cuda()
-    model.load_state_dict(ckpt["state_dict"])
+    model.load_state_dict(ckpt["state_dict"],strict=True) #TODO
 
     g_test = assign_appearance(dataset.img_ids_train, dataset.img_ids_test)
     g_val = assign_appearance(dataset.img_ids_train, dataset.img_ids_val)

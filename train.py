@@ -15,6 +15,7 @@ from evaluation.metrics import *
 from loss import Loss
 from opt import get_opts
 from utils import *
+from einops import rearrange, reduce, repeat
 
 
 class NeuralDiffSystem(pytorch_lightning.LightningModule):
@@ -236,7 +237,35 @@ class NeuralDiffSystem(pytorch_lightning.LightningModule):
         self.log("val/loss", mean_loss)
         self.log("val/psnr", mean_psnr, prog_bar=True)
 
+    def nerf_step(self,batch_xyz,input_dirs):
+        batch_xyz_embed = self.embedding_xyz(batch_xyz)
+        dir_embed =  self.embedding_dir(input_dirs)
+        nerf_in = torch.cat((batch_xyz_embed,dir_embed),dim=1)
+        nerf_in = (nerf_in.to("cuda:0")).float()
+        # Batch x ( rgb:3 + sigma:1 )
+        pred = self.nerf_coarse(nerf_in,output_dynamic=False)
+        return pred
+    
+    def nerf_step_fine(self,batch_xyz,input_dirs,ts=0,N_samples_=1,output_dynamic=True):
+        batch_xyz_embed = self.embedding_xyz(batch_xyz).to('cuda')
+        dir_embed =  self.embedding_dir(input_dirs).to('cuda')
+        
+        # create other necessary inputs
+        if output_dynamic:
+            ts = torch.tensor(ts).to('cuda')
+            t_embedded = self.embeddings["t"](ts)
+            a_embedded = self.embeddings["a"](ts)
 
+            t_embedded = t_embedded.view(1,-1).repeat(batch_xyz.shape[0],1)
+            a_embedded = a_embedded.view(1,-1).repeat(batch_xyz.shape[0],1)
+       
+        nerf_in = torch.cat((batch_xyz_embed,dir_embed,a_embedded),dim=1).float()
+        #nerf_in = (nerf_in.to("cuda:0")).float()
+       
+        # Batch x ( rgb:3 + sigma:1 )
+        pred = self.nerf_fine(nerf_in,sigma_only=False,output_dynamic=False)
+        return pred
+    
 def init_trainer(hparams, logger=None, checkpoint_callback=None):
     if checkpoint_callback is None:
         checkpoint_callback = pytorch_lightning.callbacks.ModelCheckpoint(

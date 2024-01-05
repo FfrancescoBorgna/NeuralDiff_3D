@@ -187,7 +187,7 @@ def render_single_views(args, model, dataset, root, save_cache=False):
     root = os.path.join(root, "single_views")
     os.makedirs(root)
 
-    sid = SAMPLE_IDS[args.vid]
+    #sid = SAMPLE_IDS[args.vid]
 
     psnr = evaluation.video.render_single_view(
         dataset, model,root,n_images=args.summary_n_samples

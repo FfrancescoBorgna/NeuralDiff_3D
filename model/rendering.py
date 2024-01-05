@@ -417,3 +417,4 @@ def render_rays(
         )
 
     return results
+

@@ -1,4 +1,6 @@
 import argparse
+import sys
+sys.path.append('/scratch/fborgna/NeuralDiff')
 from colmap_converter.meta import *
 from colmap_converter.frames import *
 
