@@ -7,7 +7,7 @@ data/
 *.png
 *.jpg
 *.ply
-.tar.gz
+*.tar.gz
 
 __pycache__/
 *.py[cod]
