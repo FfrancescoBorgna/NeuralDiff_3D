@@ -9,7 +9,7 @@ OUT=$4
 MASKS_N_SAMPLES=$5
 SUMMARY_N_SAMPLES=$6
 
-EPOCH=28
+EPOCH=9_org
 
 CUDA_VISIBLE_DEVICES=0 python evaluate.py \
   --path $CKP\/$VID\/epoch\=$EPOCH\.ckpt \
@@ -18,6 +18,6 @@ CUDA_VISIBLE_DEVICES=0 python evaluate.py \
   --outputs $OUT \
   --masks_n_samples $MASKS_N_SAMPLES \
   --summary_n_samples $SUMMARY_N_SAMPLES \
-  --root_data "data/Epic_converted" \
-  #--summary_n_samples 10 #how many samples to use
+  --root_data "data/EPIC-Diff" \
+  #--summary_n_samples 100 #how many samples to use
   #--root_data "data/Epic_converted"

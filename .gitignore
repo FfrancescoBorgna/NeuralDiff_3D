@@ -8,6 +8,7 @@ data/
 *.jpg
 *.ply
 *.tar.gz
+*.pth
 
 __pycache__/
 *.py[cod]
@@ -16,3 +17,4 @@ pcd_P01_01.npy
 scripts/train_log
 model/rendering.py
 visible_P01_01.json
+single_frame_grid.json

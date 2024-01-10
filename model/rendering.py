@@ -232,6 +232,9 @@ def render_rays(
         weights = alphas * transmittance
         weights_sum = reduce(weights, "n1 n2 -> n1", "sum")
 
+        #Added sampled positions MODDED ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+        results[f"xyz_{typ}"] = xyz_
+        # ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
         results[f"weights_{typ}"] = weights
         results[f"static_weights_{typ}"] = weights
         results[f"static_weights_sum_{typ}"] = weights_sum

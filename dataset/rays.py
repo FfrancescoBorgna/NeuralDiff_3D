@@ -32,13 +32,13 @@ class EPICDiff(Dataset):
         self.vid = vid
 
         #Get image dimensions
-        self.img_w = 2*228
-        self.img_h = 2*128
+        #self.img_w = 2*228
+        #self.img_h = 2*128
         self.split = split
         self.val_num = 1
         self.transform = torchvision.transforms.Compose([
             torchvision.transforms.ToTensor(), #TODO
-            torchvision.transforms.Resize((self.img_h,self.img_w))
+            #torchvision.transforms.Resize((self.img_h,self.img_w))
         ])
         self.init_meta()
 
@@ -79,6 +79,8 @@ class EPICDiff(Dataset):
 
         img = Image.open(os.path.join(self.root, "frames", self.image_paths[idx]))
         img_w, img_h = img.size
+        self.img_w = img_w
+        self.img_h = img_h
         img = self.transform(img)  # (3, h, w)
         _,img_h,img_w = img.size() #TODO Check thissss
         img = img.view(3, -1).permute(1, 0)  # (h*w, 3) RGB

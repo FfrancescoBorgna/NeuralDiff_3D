@@ -123,11 +123,40 @@ def run2(model, dataset,indx,test_time=True):
   
     results = model.render(sample)
 
+    out = {}
+    #interested_keys = ["xyz_fine","xyz_coarse","static_sigmas_coarse","static_sigmas_fine","_rgb_fine_static","rgb_fine_static","static_rgbs_fine","static_rgbs_coarse"]
+    interested_keys_coarse = ["xyz_coarse","static_sigmas_coarse"]
+    interested_keys_fine = ["xyz_fine","static_sigmas_fine","static_rgbs_fine"]
+
+    print("Writing coarse model")
+    file_path_coarse = "coarse.pth"
+    for ik in interested_keys_coarse:
+        out[ik] = results[ik]
+    torch.save(out, file_path_coarse)
+
+    print("Writing fine model")
+    out = {}
+    file_path_fine = "fine.pth"
+    for ik in interested_keys_fine:
+        out[ik] = results[ik]
+    torch.save(out, file_path_fine)
+    #JSON ????????????????????????????????????????????????????
+    #for ik in interested_keys:
+    #     out[ik] = results[ik].cpu().numpy().tolist()
+    #
+    #write_json("single_frame_grid.json",out)
+    print("Ciao")
+
 def load_json(path):
     # Load the JSON file into a Python object
     with open(path, 'r') as json_file:
         data = json.load(json_file)
     return data
+
+def write_json(path,data):
+    with open(path, 'w') as json_file:
+        json.dump(data, json_file)
+    return 1
 if __name__ == "__main__":
     args = parse_args()
     
