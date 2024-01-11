@@ -92,25 +92,48 @@ def render_separate_video(args, model, dataset, root, save_cache=False):
     # Writing to meta.json
     with open(json_path, "w") as outfile:
         outfile.write(json_object)
-    
-def run(model,dataloader):
+
+def render_single_image(args, model, dataset, root, save_cache=False):
+    """Render  single frame."""
+    root = os.path.join(root, "singleFrame")
+    os.makedirs(root)
+
+    sid = SAMPLE_IDS[args.vid]
+
+    psnr = evaluation.video.render_single_view(
+        dataset, model,root,sample_id=656,n_images=0
+    )
+
+def run(args,model,dataloader):
     new_pcd = np.zeros((1,7))
     with torch.no_grad():
         for batch in tqdm(dataloader):
             batch_xyz, batch_rgb = batch
-            input_dir = (torch.tensor([0.012,0.194,-0.98],dtype=float)).repeat(batch_xyz.shape[0],1)
+            #input_dir = (torch.tensor([-0.134,-0.0553,-0.989],dtype=float)).repeat(batch_xyz.shape[0],1)
+            input_dir = (torch.tensor([0,0,0],dtype=float)).repeat(batch_xyz.shape[0],1)
             pred = model.nerf_step_fine(batch_xyz,input_dir)
             
-            tmp_pcd = np.concatenate((batch_xyz,pred.cpu().numpy()),axis=1)
+            tmp_pcd = np.concatenate((batch_xyz,pred.cpu().numpy()),axis=1) # (xyz,rgb,sigma)
             new_pcd = np.concatenate((new_pcd,tmp_pcd))
 
     new_pcd = np.delete(new_pcd,0,axis=0) #remove first row
-    np.save("pcd_P01_01.npy",new_pcd)
+    #filter based on sigma
+    th = 0.09
+    sigmas_out_path = os.path.join(args.root_data,args.vid,"sigmas")
+    if not os.path.exists(sigmas_out_path):
+        os.makedirs(sigmas_out_path)
+    sigmas_out_path = os.path.join(args.root_data,args.vid,"sigmas",args.vid+"_"+str(th).replace('.','_')+".npy")    
+    new_pcd = filter_pcd(new_pcd,th,sigmas_out_path)
     #save as .ply
     ply = o3d.geometry.PointCloud()
     ply.points = o3d.utility.Vector3dVector(new_pcd[:,0:3])
     ply.colors = o3d.utility.Vector3dVector(new_pcd[:,3:6])
-    o3d.io.write_point_cloud("pcd_P01_01.ply", ply)
+    
+    ply_out_path = os.path.join(args.root_data,args.vid,"ply")
+    if not os.path.exists(ply_out_path):
+        os.makedirs(ply_out_path)
+    ply_out_path = os.path.join(args.root_data,args.vid,"ply",args.vid+"_"+str(th).replace('.','_')+".ply")
+    o3d.io.write_point_cloud(ply_out_path, ply)
     return 1    
 
 def run_visible_points(model,frames,indxs,camera_poses):
@@ -136,7 +159,14 @@ def run_visible_points(model,frames,indxs,camera_poses):
     ply.colors = o3d.utility.Vector3dVector(new_pcd[:,3:6])
     o3d.io.write_point_cloud("pcd_P01_01_285_nowei.ply", ply)
     return 1
-    
+
+def filter_pcd(pcd_vec,th,sigmaName="sigmas.npy"):
+    # input: numpy xyz, rgb, sigma
+    #save sigmas
+    np.save(sigmaName, pcd_vec[:,6])
+    mask = pcd_vec[:, 6] >= th
+    new_pcd = pcd_vec[mask]
+    return new_pcd
 def load_json(path):
     # Load the JSON file into a Python object
     with open(path, 'r') as json_file:
@@ -148,6 +178,8 @@ if __name__ == "__main__":
     model, dataset, ply_dataset,ply_dataloader = init(args)
     root = os.path.join("pcds", args.exp, args.vid)
     single_viewpoints = False
+    singleRender = False
+
     if(single_viewpoints):
         frames = [285]
         file_path = '/scratch/fborgna/NeuralDiff/visible_P01_01.json'
@@ -155,8 +187,10 @@ if __name__ == "__main__":
 
         camera_poses = dataset.poses_dict
         run_visible_points(model,frames,indxs,camera_poses)
+    elif(singleRender):
+        render_single_image(args,model,dataset,"/scratch/fborgna/NeuralDiff/data/Epic_converted/P01_01_128/prova")
     else:
-        run(model,ply_dataloader)
+        run(args,model,ply_dataloader)
 
 #Load COLMAP PCD
 

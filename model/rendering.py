@@ -345,7 +345,7 @@ def render_rays(
         results[f"depth_{typ}"] = reduce(weights * z_vals, "n1 n2 -> n1", "sum")
         return
 
-    hp = kwargs["hp"]
+    hp = kwargs["hp"] #hyperparameters
 
     embedding_xyz, embedding_dir = embeddings["xyz"], embeddings["dir"]
 

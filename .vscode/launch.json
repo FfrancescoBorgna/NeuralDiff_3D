@@ -12,9 +12,9 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "justMyCode": true,
-            "args":["--path=/scratch/fborgna/NeuralDiff/ckpts/rel/P01_01/Past_exp/epoch=13.ckpt" ,
-            "--vid=P01_01", "--exp=debug",
-            "--ply_path=/scratch/fborgna/EPIC_F_rec/P01_01/dense/fused.ply",
+            "args":["--path=/scratch/fborgna/NeuralDiff/ckpts/rel/P01_01_128/epoch=9.ckpt" ,
+            "--vid=P01_01_128", "--exp=debug",
+            "--ply_path=/scratch/fborgna/EPIC_F_rec/P01_01_128/dense/0/fused.ply",
             "--root_data=data/Epic_converted",
             "--is_eval_script"],
            
