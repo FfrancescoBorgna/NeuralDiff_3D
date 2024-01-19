@@ -9,7 +9,7 @@ OUT=$4
 MASKS_N_SAMPLES=$5
 SUMMARY_N_SAMPLES=$6
 
-EPOCH=13
+EPOCH=12-v0
 
 CUDA_VISIBLE_DEVICES=0 python evaluate.py \
   --path $CKP\/$VID\/epoch\=$EPOCH\.ckpt \

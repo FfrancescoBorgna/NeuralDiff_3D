@@ -12,9 +12,9 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "justMyCode": true,
-            "args":["--path=/scratch/fborgna/NeuralDiff/ckpts/rel/P01_01_128/epoch=9.ckpt" ,
-            "--vid=P01_01_128", "--exp=debug",
-            "--ply_path=/scratch/fborgna/EPIC_F_rec/P01_01_128/dense/0/fused.ply",
+            "args":["--path=/scratch/fborgna/NeuralDiff/ckpts/rel/P01_01/epoch=12-v0.ckpt" ,
+            "--vid=P01_01", "--exp=debug",
+            "--ply_path=/scratch/fborgna/EPIC_F_rec/P01_01/dense/fused.ply",
             "--root_data=data/Epic_converted",
             "--is_eval_script"],
            
@@ -28,6 +28,7 @@
             //          "--train_ratio=1","--num_epochs=20",
             //          "--num_workers=0"],
             //
+            // COLMAP CONVERTER
             //["--colmap_dir=/scratch/fborgna/EPIC_F_rec/lego/",
             //        "--dir_dst=/scratch/fborgna/NeuralDiff/data/Epic_converted"]
             //

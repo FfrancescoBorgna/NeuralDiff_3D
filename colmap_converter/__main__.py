@@ -35,7 +35,8 @@ def parse_args():
 def run(args):
     colmap_model_dir = os.path.join(args.colmap_dir, 'sparse/0')
     colmap = load_colmap(colmap_model_dir)
-    meta = calc_meta(colmap, split_nth=args.split_nth)
+    meta = calc_meta(colmap,image_downscale=args.scale, split_nth=args.split_nth)
+    
     frames_dir_src = os.path.join(args.colmap_dir, 'images')
     dataset_id = os.path.split(os.path.normpath(args.colmap_dir))[1]
     dataset_dir = os.path.join(args.dir_dst, dataset_id)
